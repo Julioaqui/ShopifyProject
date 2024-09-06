@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Page</title>
+    <link rel="stylesheet" href="login.css">
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>Login</h2>
+        <form action="#" method="POST">
+            <div class="input-group">
+                <label for="email">Email</label>
+                <input type="text" id="email" name="email" required>
+            </div>
+            <div class="input-group">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+            <button onclick="loginAccount(event)" type="button" class="login-button">Login</button>
+            <p class="signup-link">Don't have an account? <a href="/signup/signup.html">Sign up here</a></p>
+        </form>
+    </div>
+</body>
+
+<script>
+    const baseUrl = "http://localhost:3000";
+
+    async function loginAccount(event) {
+        event.preventDefault();
+        let email = document.getElementById("email").value;
+        let password = document.getElementById("password").value;
+
+        if (email === "" || password === "") {
+            return alert("Passwords do not match")
+        }
+
+        let login = {
+            email: email,
+            password: password,
+        }
+
+        let formData = JSON.stringify(login);
+
+        try {
+            const response = await fetch(`${baseUrl}/user/login`, {
+                method: "POST",
+                body: formData,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            })
+            if (response.ok) {
+                const res = await response.json();
+                let token = res.token;
+                console.log(token);
+                localStorage.setItem("token", JSON.stringify(token));
+                alert("Login Successful");
+
+                window.location.href = "/home/home.html";
+            } else {
+                alert("Invalid email or password");
+            }
+        } catch (error) {
+            console.log("error", error);
+
+        }
+    }
+    // .then(async(response) =>{
+    //     let res = await response.json();
+
+    //     console.log("res:", res);
+    //     alert("Login Successfully.")
+
+
+    //     // localStorage.setItem('token', JSON.stringify() )
+
+    //     // window.location.href = "/home/home.html";
+    // })
+    // .catch(error =>{
+    //     console.log("error: ", error);
+    //     alert("Invalid credentials!")
+    // })
+
+
+
+
+</script>
+
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Product Page</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="home.css" />
+  </head>
+  <body>
+    <div id="mainDiv" class="container mt-5">
+      <div class="row" id="productRow"></div>
+    </div>
+    <footer class="text-center mt-5">
+      <p>&copy; 2024 Shopify. All rights reserved.</p>
+    </footer>
+  </body>
+  <script>
+    let token = JSON.parse(localStorage.getItem("token"));
+
+    if (token === null) {
+      alert("You are not authorized to access this page. Please login first.");
+      window.location.href = "/login/login.html";
+    }
+
+    const baseUrl = "http://localhost:3000";
+
+    getAllProducts();
+
+    async function getAllProducts() {
+      try {
+        let products = await fetch(`${baseUrl}/product/all`, {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        let res = await products.json();
+        let productRow = document.getElementById("productRow");
+
+        res.data.forEach((element) => {
+          let productDiv = document.createElement("div");
+          productDiv.className = "col-md-4 mb-4"; // 3 products per row
+
+          productDiv.innerHTML = `
+            <div class="card">
+              <img 
+              width='400px'
+              height = '500px'
+                src="${element.image || 'https://via.placeholder.com/150'}"
+                class="card-img-top"
+                alt="${element.name || 'Product Image'}"
+              />
+              <div class="card-body">
+                <h5 class="card-title">${element.title}</h5>
+                <p class="card-text">${element.description}</p>
+                <h6 class="card-subtitle mb-2 text-muted">Rs. ${element.price}</h6>
+                <a href="#" class="btn btn-primary w-100">Buy Now</a>
+              </div>
+            </div>
+          `;
+          productRow.appendChild(productDiv);
+        });
+      } catch (error) {
+        console.log("Error:", error.message);
+      }
+    }
+  </script>
+</html>
