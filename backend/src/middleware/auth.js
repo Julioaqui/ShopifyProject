@@ -13,7 +13,7 @@ const authenticate = async (req, res, next) => {
         let user = await User.findOne({ _id: decoded.userID });
         // console.log("User: ", user)
 
-        if (user.roles === "admin") {
+        if (user) {
             next() 
             // console.log("Correct User")
         } else {

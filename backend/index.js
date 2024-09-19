@@ -16,7 +16,7 @@ app.use(express.json());   // Converts json into object
 
 
 app.use("/user", userController)
-app.use("/product", authMiddleware, productController)
+app.use("/product", productController)
 
 app.listen("3000", ()=>{
     Connection()
